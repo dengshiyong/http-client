@@ -9,6 +9,6 @@ int main(int argc, char **argv)
         fprintf(stderr, "Usage: %s <URL>\n", argv[0]);
         return EXIT_FAILURE;
     }
-    httpc_make_get_request(argv[1]);
+    http_client_make_get_request(argv[1]);
     return EXIT_SUCCESS;
 }

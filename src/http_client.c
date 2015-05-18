@@ -1,7 +1,7 @@
 #include "http_client.h"
 #include <curl/curl.h>
 
-int httpc_make_get_request(const char *url)
+int http_client_make_get_request(const char *url)
 {
     if (!url) {
         return -1;
