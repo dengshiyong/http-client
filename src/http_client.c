@@ -25,7 +25,7 @@ void http_client_cleanup(http_client_t *http_client)
 }
 
 int http_client_make_get_request(const http_client_t *http_client, const char *url,
-        write_cb_t *write_cb, void *userp)
+        write_cb_t *write_cb, void *userp, int *http_code)
 {
     if (!url) {
         return -1;
@@ -35,12 +35,19 @@ int http_client_make_get_request(const http_client_t *http_client, const char *u
     if (userp) {
         curl_easy_setopt(http_client->handle, CURLOPT_WRITEDATA, userp);
     }
-    curl_easy_perform(http_client->handle);
-    return 0;
+
+    CURLcode rc = curl_easy_perform(http_client->handle);
+    if (rc != CURLE_OK) {
+        return rc;
+    }
+
+    curl_easy_getinfo(http_client->handle, CURLINFO_RESPONSE_CODE, http_code);
+
+    return rc;
 }
 
 int http_client_make_post_request(const http_client_t *http_client, const char *url,
-        void *data, size_t data_len, write_cb_t *write_cb, void *userp)
+        void *data, size_t data_len, write_cb_t *write_cb, void *userp, int *http_code)
 {
     if (!url) {
         return -1;
@@ -56,6 +63,18 @@ int http_client_make_post_request(const http_client_t *http_client, const char *
         curl_easy_setopt(http_client->handle, CURLOPT_POSTFIELDS, data);
         curl_easy_setopt(http_client->handle, CURLOPT_POSTFIELDSIZE, data_len);
     }
-    curl_easy_perform(http_client->handle);
-    return 0;
+
+    CURLcode rc = curl_easy_perform(http_client->handle);
+    if (rc != CURLE_OK) {
+        return rc;
+    }
+
+    curl_easy_getinfo(http_client->handle, CURLINFO_RESPONSE_CODE, http_code);
+
+    return rc;
+}
+
+const char *http_client_strerror(int rc)
+{
+    return curl_easy_strerror(rc);
 }

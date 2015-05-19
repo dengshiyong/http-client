@@ -11,6 +11,8 @@ int http_client_init(http_client_t *http_client);
 void http_client_cleanup(http_client_t *http_client);
 
 int http_client_make_get_request(const http_client_t *http_client, const char *url,
-        write_cb_t *write_cb, void *userp);
+        write_cb_t *write_cb, void *userp, int *http_code);
 int http_client_make_post_request(const http_client_t *http_client, const char *url,
-        void *data, size_t data_len, write_cb_t *write_cb, void *userp);
+        void *data, size_t data_len, write_cb_t *write_cb, void *userp, int *http_code);
+
+const char *http_client_strerror(int rc);

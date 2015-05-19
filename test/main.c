@@ -22,8 +22,38 @@ int main(int argc, char **argv)
 
     http_client_t http_client;
     http_client_init(&http_client);
-    http_client_make_get_request(&http_client, argv[1], write_data, NULL);
-    http_client_make_post_request(&http_client, argv[1], "hello", 5, write_data, NULL);
+
+    int http_code = 0;
+    int rc = http_client_make_get_request(&http_client, argv[1], write_data, NULL, &http_code);
+    if (rc < 0) {
+        fprintf(stderr, "error: %s\n", http_client_strerror(rc));
+        return EXIT_FAILURE;
+    }
+    switch (http_code) {
+    case 200:
+        break;
+    case 404:
+        fprintf(stderr, "Not Found\n");
+        break;
+    default:
+        fprintf(stderr, "got response %d\n", http_code);
+    }
+
+    rc = http_client_make_post_request(&http_client, argv[1], "hello", 5, write_data, NULL, &http_code);
+    if (rc < 0) {
+        fprintf(stderr, "error: %s\n", http_client_strerror(rc));
+        return EXIT_FAILURE;
+    }
+    switch (http_code) {
+    case 200:
+        break;
+    case 404:
+        fprintf(stderr, "Not Found\n");
+        break;
+    default:
+        fprintf(stderr, "got response %d\n", http_code);
+    }
+
     http_client_cleanup(&http_client);
 
     return EXIT_SUCCESS;
