@@ -1,7 +1,14 @@
 #include "http_client.h"
 
+static int inited = 0;
+
 int http_client_init(http_client_t *http_client, write_cb_t *write_cb, void *userp)
 {
+    if (!inited) {
+        curl_global_init(CURL_GLOBAL_NOTHING);
+        inited = 1;
+    }
+
     http_client->handle = curl_easy_init();
     if (!http_client->handle) {
         return -1;
@@ -16,6 +23,9 @@ int http_client_init(http_client_t *http_client, write_cb_t *write_cb, void *use
 void http_client_cleanup(http_client_t *http_client)
 {
     curl_easy_cleanup(http_client->handle);
+    if (inited) {
+        curl_global_cleanup();
+    }
 }
 
 int http_client_make_get_request(const http_client_t *http_client, const char *url)
