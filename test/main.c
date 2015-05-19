@@ -21,9 +21,9 @@ int main(int argc, char **argv)
     }
 
     http_client_t http_client;
-    http_client_init(&http_client, write_data, NULL);
-    http_client_make_get_request(&http_client, argv[1]);
-    http_client_make_post_request(&http_client, argv[1], "hello", 5);
+    http_client_init(&http_client);
+    http_client_make_get_request(&http_client, argv[1], write_data, NULL);
+    http_client_make_post_request(&http_client, argv[1], "hello", 5, write_data, NULL);
     http_client_cleanup(&http_client);
 
     return EXIT_SUCCESS;
