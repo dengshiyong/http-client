@@ -37,3 +37,18 @@ int http_client_make_get_request(const http_client_t *http_client, const char *u
     curl_easy_perform(http_client->handle);
     return 0;
 }
+
+int http_client_make_post_request(const http_client_t *http_client, const char *url, void *data, size_t data_len)
+{
+    if (!url) {
+        return -1;
+    }
+
+    curl_easy_setopt(http_client->handle, CURLOPT_URL, url);
+    if (data) {
+        curl_easy_setopt(http_client->handle, CURLOPT_POSTFIELDS, data);
+        curl_easy_setopt(http_client->handle, CURLOPT_POSTFIELDSIZE, data_len);
+    }
+    curl_easy_perform(http_client->handle);
+    return 0;
+}
